@@ -106,4 +106,43 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     setClock('.timer', deadline);
+    
+    // MODAL
+
+    // Добавили в HTML элементам data-аттрибуты data-modal и data-close, чтобы удобнее было взаимодействовать с ними
+
+    const modalTriger = document.querySelectorAll('[data-modal]'), // получение элемента по аттрибутам data-modal
+          modal = document.querySelector('.modal'),
+          modalCloseBtn = document.querySelector('[data-close]');
+
+    modalTriger.forEach(btn => {
+        btn.addEventListener('click', () => {
+            modal.classList.add('show');
+            modal.classList.remove('hide');
+            document.body.style.overflow = 'hidden'; // запрещаем прокрутку страницы за модальным окном
+        });
+    });
+    
+    // создаем функцию, которая будет закрывать модальное окно
+    function closeModal() {
+        modal.classList.add('hide');
+        modal.classList.remove('show');
+        document.body.style.overflow = ''; // разрешить прокрутку страницы за модальным окном
+    }
+
+    modalCloseBtn.addEventListener('click', closeModal);
+    
+    // Закрытие модального окна при клике на подложку:
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+
+    // Закрытие модального окна при нажатии Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.code === 'Escape' && modal.classList.contains('show')) {
+            closeModal();
+        }
+    });
 });

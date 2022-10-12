@@ -116,12 +116,17 @@ window.addEventListener('DOMContentLoaded', () => {
           modalCloseBtn = document.querySelector('[data-close]');
 
     modalTriger.forEach(btn => {
-        btn.addEventListener('click', () => {
-            modal.classList.add('show');
-            modal.classList.remove('hide');
-            document.body.style.overflow = 'hidden'; // запрещаем прокрутку страницы за модальным окном
-        });
+        btn.addEventListener('click', openModal);
     });
+    
+    // создаем функцию, которая будет открывать модальное окно
+    function openModal() {
+        modal.classList.add('show');
+        modal.classList.remove('hide');
+        document.body.style.overflow = 'hidden'; // запрещаем прокрутку страницы за модальным окном
+        // очищаем интервал, чтобы после первого открытия модального окна оно больше само не открывалось
+        clearInterval(modalTimerId);
+    }
     
     // создаем функцию, которая будет закрывать модальное окно
     function closeModal() {
@@ -145,4 +150,17 @@ window.addEventListener('DOMContentLoaded', () => {
             closeModal();
         }
     });
+
+    // Вызовем модальное окно через 5 секунд после загрузки страницы
+    const modalTimerId = setTimeout(openModal, 5000);
+
+    // Вызовем модальное окно при прокрутке страницы до конца
+    function showModalByScroll() {
+        if(window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
+            openModal();
+            window.removeEventListener('scroll', showModalByScroll);
+        }
+    }
+    
+    window.addEventListener('scroll', showModalByScroll);
 });
